@@ -6,6 +6,8 @@ export default {
       colors: {
         calender: {
           100: "#F5F6FA",
+          200: "#7A8095",
+          300: "#50565E",
         },
         primary: {
           100: "#6E44FF",

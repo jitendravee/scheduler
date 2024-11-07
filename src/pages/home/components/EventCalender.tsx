@@ -1,4 +1,6 @@
 import clsx from "clsx";
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+
 import {
   eachDayOfInterval,
   endOfMonth,
@@ -55,43 +57,41 @@ const EventCalendar = ({ events }: EventCalendarProps) => {
 
   return (
     <div className="container mx-auto p-4">
-      <div className="flex items-center justify-between mb-4 ">
-        <button
-          onClick={handlePreviousMonth}
-          className="px-4 py-2 bg-calender-100 rounded"
-        >
-          Previous
-        </button>
-        <h2 className="text-center text-lg font-bold">
+      <div className="flex items-center  mb-4 gap-2">
+        <h2 className="text-center text-lg text-calender-300 font-bold mr-5 ">
           {format(currentDate, "MMMM yyyy")}
         </h2>
-        <button
-          onClick={handleNextMonth}
-          className="px-4 py-2 bg-calender-100  rounded"
-        >
-          Next
-        </button>
+        <div onClick={handlePreviousMonth} style={{ color: "orange" }}>
+          <FaArrowLeft />
+        </div>
+
+        <FaArrowRight onClick={handleNextMonth} style={{ color: "orange" }} />
       </div>
-      <div className="grid grid-cols-7 gap-2 ">
+      <div className="grid grid-cols-7 gap-2 p-8 w-full">
         {WEEKDAYS.map((day) => (
-          <div key={day} className="font-bold text-center">
+          <div key={day} className="font-bold text-calender-300 text-center">
             {day}
           </div>
         ))}
+
         {Array.from({ length: startingDayIndex }).map((_, index) => (
           <div
             key={`empty-${index}`}
-            className="border rounded-md  text-center bg-calender-100 "
+            className="border rounded-md bg-calender-100"
           />
         ))}
+
         {daysInMonth.map((day, index) => {
           const dateKey = format(day, "yyyy-MM-dd");
           const todaysEvents = eventsByDate[dateKey] || [];
+
           return (
             <div
               key={index}
               className={clsx(
-                "border rounded-md p-2  text-center bg-calender-100 "
+                "border rounded-md text-calender-200 text-center bg-calender-100",
+                "flex flex-col items-center justify-center",
+                "aspect-square"
               )}
             >
               {format(day, "d")}
