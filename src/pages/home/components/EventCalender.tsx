@@ -1,6 +1,5 @@
 import clsx from "clsx";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
-
 import {
   eachDayOfInterval,
   endOfMonth,
@@ -21,9 +20,13 @@ interface Event {
 
 interface EventCalendarProps {
   events: Event[];
+  callBackSchedulerForm: (day: Date) => void;
 }
 
-const EventCalendar = ({ events }: EventCalendarProps) => {
+const EventCalendar = ({
+  events,
+  callBackSchedulerForm,
+}: EventCalendarProps) => {
   const [currentDate, setCurrentDate] = useState(new Date());
 
   const firstDayOfMonth = startOfMonth(currentDate);
@@ -36,6 +39,13 @@ const EventCalendar = ({ events }: EventCalendarProps) => {
 
   const startingDayIndex = getDay(firstDayOfMonth);
 
+  // Handle the date click
+  const handleDateClick = (day: Date) => {
+    console.log(`Date clicked: ${format(day, "yyyy-MM-dd")}`);
+    callBackSchedulerForm(day);
+  };
+
+  // Group events by date
   const eventsByDate = useMemo(() => {
     return events.reduce((acc: { [key: string]: Event[] }, event) => {
       const dateKey = format(event.date, "yyyy-MM-dd");
@@ -47,6 +57,7 @@ const EventCalendar = ({ events }: EventCalendarProps) => {
     }, {});
   }, [events]);
 
+  // Handle previous and next month
   const handlePreviousMonth = () => {
     setCurrentDate(subMonths(currentDate, 1));
   };
@@ -57,7 +68,7 @@ const EventCalendar = ({ events }: EventCalendarProps) => {
 
   return (
     <div className="container mx-auto p-4">
-      <div className="flex items-center  mb-4 gap-2">
+      <div className="flex items-center mb-4 gap-2">
         <h2 className="text-center text-lg text-calender-300 font-bold mr-5 ">
           {format(currentDate, "MMMM yyyy")}
         </h2>
@@ -67,6 +78,7 @@ const EventCalendar = ({ events }: EventCalendarProps) => {
 
         <FaArrowRight onClick={handleNextMonth} style={{ color: "orange" }} />
       </div>
+
       <div className="grid grid-cols-7 gap-2 p-8 w-full">
         {WEEKDAYS.map((day) => (
           <div key={day} className="font-bold text-calender-300 text-center">
@@ -74,6 +86,7 @@ const EventCalendar = ({ events }: EventCalendarProps) => {
           </div>
         ))}
 
+        {/* Empty spaces before the first day of the month */}
         {Array.from({ length: startingDayIndex }).map((_, index) => (
           <div
             key={`empty-${index}`}
@@ -81,6 +94,7 @@ const EventCalendar = ({ events }: EventCalendarProps) => {
           />
         ))}
 
+        {/* Date grid */}
         {daysInMonth.map((day, index) => {
           const dateKey = format(day, "yyyy-MM-dd");
           const todaysEvents = eventsByDate[dateKey] || [];
@@ -88,10 +102,12 @@ const EventCalendar = ({ events }: EventCalendarProps) => {
           return (
             <div
               key={index}
+              onClick={() => handleDateClick(day)} // Pass the day
               className={clsx(
                 "border rounded-md text-calender-200 text-center bg-calender-100",
                 "flex flex-col items-center justify-center",
-                "aspect-square"
+                "aspect-square", // This ensures square shape
+                "cursor-pointer" // Make the cell clickable
               )}
             >
               {format(day, "d")}
