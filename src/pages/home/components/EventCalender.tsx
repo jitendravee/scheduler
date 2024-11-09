@@ -20,7 +20,10 @@ interface Event {
 
 interface EventCalendarProps {
   events: Event[];
-  callBackSchedulerForm: (day: Date) => void;
+  callBackSchedulerForm: (
+    day: Date,
+    event: React.MouseEvent<HTMLDivElement>
+  ) => void;
 }
 
 const EventCalendar = ({
@@ -40,9 +43,9 @@ const EventCalendar = ({
   const startingDayIndex = getDay(firstDayOfMonth);
 
   // Handle the date click
-  const handleDateClick = (day: Date) => {
+  const handleDateClick = (day: Date, e: React.MouseEvent<HTMLDivElement>) => {
     console.log(`Date clicked: ${format(day, "yyyy-MM-dd")}`);
-    callBackSchedulerForm(day);
+    callBackSchedulerForm(day, e);
   };
 
   // Group events by date
@@ -102,7 +105,7 @@ const EventCalendar = ({
           return (
             <div
               key={index}
-              onClick={() => handleDateClick(day)} // Pass the day
+              onClick={(e) => handleDateClick(day, e)} // Pass the day
               className={clsx(
                 "border rounded-md text-calender-200 text-center bg-calender-100",
                 "flex flex-col items-center justify-center",
